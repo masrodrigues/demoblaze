@@ -1,5 +1,5 @@
 #language: pt
-@fullflow @purchase
+@purchase
 Funcionalidade: Realizar compra de monitor no Demoblaze
 
   Cenario: Compra bem-sucedida de um monitor

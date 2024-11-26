@@ -23,6 +23,7 @@ public class MonitorSteps {
     private MonitorPage monitorPage;
     private CartPage cartPage;
     private OrderPage orderPage;
+    private LoginPage loginPage;
     private ExtentTest test;
 
     @Before
@@ -32,6 +33,7 @@ public class MonitorSteps {
         monitorPage = new MonitorPage(driver);
         cartPage = new CartPage(driver);
         orderPage = new OrderPage(driver);
+        loginPage = new LoginPage(driver);
 
         test = ExtentReportManager.createTest("Teste de Fluxo de Compra de Monitor");
 
@@ -49,7 +51,40 @@ public class MonitorSteps {
             ExtentReportManager.flushReport();
         }
     }
+    @Dado("que estou na página inicial do Demoblaze")
+    public void queEstouNaPaginaInicialDoDemoblaze() {
+        driver.get("https://www.demoblaze.com");
+        test.info("Acessada a página inicial do Demoblaze.");
+    }
+    @Quando("eu abro o formulário de login")
+    public void euAbroOFormularioDeLogin() {
+        loginPage.openLoginForm();
+        test.info("Formulário de login aberto.");
+    }
 
+    @E("preencho o formulário de login com nome de usuário {string} e senha {string}")
+    public void preenchoOFormularioDeLoginComNomeDeUsuarioESenha(String username, String password) {
+        loginPage.fillLoginForm(username, password);
+        test.info("Formulário de login preenchido com usuário: " + username);
+    }
+
+    @Quando("confirmo o login")
+    public void confirmoOLogin() {
+        loginPage.submitLogin();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nameofuser")));
+        test.info("Login confirmado.");
+    }
+
+    @Entao("devo ver meu nome de usuário como {string}")
+    public void devoVerMeuNomeDeUsuarioComo(String expectedUsername) {
+        String actualWelcomeMessage = loginPage.getWelcomeMessage();
+        test.info("Mensagem de boas-vindas recebida: " + actualWelcomeMessage);
+
+        assertTrue(actualWelcomeMessage.contains(expectedUsername),
+                "Mensagem de boas-vindas incorreta: " + actualWelcomeMessage);
+        test.pass("Login validado com sucesso. Mensagem: " + actualWelcomeMessage);
+    }
     @Quando("navego para a categoria {string}")
     public void navegoParaACategoria(String category) {
         homePage.clickCategory(category);
