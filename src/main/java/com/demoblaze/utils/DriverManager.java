@@ -12,7 +12,6 @@ public class DriverManager {
     public static WebDriver getDriver() {
         if (driver == null) {
             WebDriverManager.chromedriver().setup();
-
             driver = new ChromeDriver();
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
             driver.manage().window().maximize();
